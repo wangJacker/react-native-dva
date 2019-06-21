@@ -2,39 +2,43 @@ import { createAction, NavigationActions, Storage } from '../utils'
 import * as authService from '../services/auth'
 
 export default {
-  namespace: 'app',
-  state: {
-    login: false,
-    loading: true,
-    fetching: false,
-  },
-  reducers: {
-    updateState(state, { payload }) {
-      return { ...state, ...payload }
+    namespace: 'app',
+    state: {
+        login: false,
+        loading: true,
+        fetching: false,
     },
-  },
-  effects: {
-    *loadStorage(action, { call, put }) {
-      const login = yield call(Storage.get, 'login', false)
-      yield put(createAction('updateState')({ login, loading: false }))
+    reducers: {
+        updateState(state, { payload }) {
+            return { ...state, ...payload }
+        },
     },
-    *login({ payload }, { call, put }) {
-      yield put(createAction('updateState')({ fetching: true }))
-      const login = yield call(authService.login, payload)
-      if (login) {
-        yield put(NavigationActions.back())
-      }
-      yield put(createAction('updateState')({ login, fetching: false }))
-      Storage.set('login', login)
+    effects: {
+        *loadStorage(action, { call, put }) {
+            const login = yield call(Storage.get, 'login', false)
+            yield put(createAction('updateState')({ login, loading: false }))
+        },
+        *login({ payload }, { call, put }) {
+            yield put(createAction('updateState')({ fetching: true }))
+            const login = yield call(authService.login, payload)
+            if (login) {
+                yield put(NavigationActions.back())
+            }
+            yield put(createAction('updateState')({ login, fetching: false }))
+            Storage.set('login', login)
+        },
+        *logout(action, { call, put }) {
+            yield call(Storage.set, 'login', false)
+            yield put(createAction('updateState')({ login: false }))
+        },
+        *getStoreConfig({ payload }, { call, put }) {
+            const data = yield call(authService.getStoreConfig, payload)
+            console.log(data)
+        }
     },
-    *logout(action, { call, put }) {
-      yield call(Storage.set, 'login', false)
-      yield put(createAction('updateState')({ login: false }))
+    subscriptions: {
+        setup({ dispatch }) {
+            dispatch({ type: 'loadStorage' })
+        },
     },
-  },
-  subscriptions: {
-    setup({ dispatch }) {
-      dispatch({ type: 'loadStorage' })
-    },
-  },
 }

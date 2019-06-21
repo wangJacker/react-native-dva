@@ -1,6 +1,5 @@
 import AsyncStorage from '@react-native-community/async-storage'
 
-console.log(AsyncStorage)
 function clear() {
     return AsyncStorage.clear()
 }

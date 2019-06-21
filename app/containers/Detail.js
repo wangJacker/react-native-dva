@@ -12,9 +12,8 @@ class Detail extends Component {
         title: 'Detail',
     }
 
-    componentWillMount() {
-        console.log(this.props);
-    }
+  
+    
 
     goBack = () => {
         this.props.dispatch(NavigationActions.back({ routeName: 'Account' }))

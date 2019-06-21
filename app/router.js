@@ -40,6 +40,14 @@ const MainNavigator = createStackNavigator(
     },
     {
         headerMode: 'float',
+        defaultNavigationOptions: {
+            headerStyle: {
+                backgroundColor: 'red',
+                height: 30,
+                width: 800
+            },
+
+        }
     }
 )
 
