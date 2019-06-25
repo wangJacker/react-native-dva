@@ -18,17 +18,22 @@ import Login from './containers/Login'
 import Home from './containers/Home'
 import Account from './containers/Account'
 import Detail from './containers/Detail'
-import Test from './containers/Test'
 
 const HomeNavigator = createBottomTabNavigator({
     Home: { screen: Home },
     Account: { screen: Account },
-})
-
+}, {
+        // initialRouteName: 'Account',
+        tabBarOptions: {
+            activeTintColor: 'tomato',
+            inactiveTintColor: 'gray',
+        }
+    })
 HomeNavigator.navigationOptions = ({ navigation }) => {
     const { routeName } = navigation.state.routes[navigation.state.index]
 
     return {
+        header: null,
         headerTitle: routeName,
     }
 }
@@ -36,19 +41,12 @@ HomeNavigator.navigationOptions = ({ navigation }) => {
 const MainNavigator = createStackNavigator(
     {
         HomeNavigator: { screen: HomeNavigator },
-        Detail: { screen: Detail },
-    },
-    {
-        headerMode: 'float',
-        defaultNavigationOptions: {
-            headerStyle: {
-                backgroundColor: 'red',
-                height: 30,
-                width: 800
-            },
 
-        }
-    }
+        // Home: { screen: Home },
+        Detail: { screen: Detail },
+        // Account: { screen: Account },
+    },
+
 )
 
 const AppNavigator = createStackNavigator(
@@ -57,12 +55,13 @@ const AppNavigator = createStackNavigator(
         Login: { screen: Login },
     },
     {
+        // initialRouteName: 'Account',
         headerMode: 'none',
         mode: 'modal',
         navigationOptions: {
-            gesturesEnabled: false,
+            gesturesEnabled: false, //是否可以使用手势关闭此屏幕 IOS 默认为true android 为false
         },
-        transitionConfig: () => ({
+        transitionConfig: () => ({ // 具有自定义屏幕转换动画的
             transitionSpec: {
                 duration: 300,
                 easing: Easing.out(Easing.poly(4)),
@@ -87,6 +86,7 @@ const AppNavigator = createStackNavigator(
             },
         }),
     }
+
 )
 
 export const routerReducer = createNavigationReducer(AppNavigator)
@@ -96,6 +96,7 @@ export const routerMiddleware = createReactNavigationReduxMiddleware(
     state => state.router,
     'root'
 )
+
 
 const App = createReduxContainer(AppNavigator, 'root')
 
